@@ -1,0 +1,19 @@
+{
+  "name": "karlmarx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "inquirer": "^7.3.3",
+    "my": "^0.3.3",
+    "mysql": "^2.18.1",
+    "sql": "^0.78.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
