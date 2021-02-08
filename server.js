@@ -38,6 +38,7 @@ function fireUpEMS(){
 "View Full Employee List in Each Department",
 "Full Employee List",
 "View What Roles are Held By all Team Members",
+"Complete Team Profile",
 "Add Team Member",
 "Add Department",
 "Add Role",
@@ -66,9 +67,13 @@ case "Full Employee List":
   break;
 
 case   "View What Roles are Held By all Team Members":
-  viewAllRolles();
+  viewAllRoles();
 
   break;
+
+  case "Complete Team Profile":
+    fullProfile();
+    break;
 
 case "Add Team Member":
   addTeamMemeber();
@@ -97,12 +102,22 @@ case "Add Role":
 break;
 
     case "Exit":
-      exit();
+      exitM();
       break;
   };
 });
 
 }
+
+function fullProfile(){
+
+  connection.query("SELECT employees.id, first_name, last_name, role_id FROM employees RIGHT JOIN employees ON roles.id = employees.role_id;", 
+function(err, res){
+  console.table(res);
+fireUpEMS();
+});
+
+};
 
 
 function viewByDpt() {
@@ -138,15 +153,115 @@ fireUpEMS()
 
 };
 
-function viewEmployeesByDepartment(){
+function viewEmployeesByDepartment() {
+  connection.query("SELECT employees.id,first_name,last_name,department_name FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id;", 
+  function(err, res) {
+      console.table(res);
+      fireUpEMS();
+  });
+};
 
-connection.query("SELECT employees.id, first_name, last_name, department_name FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = department.id",
+function  viewRolesInDepts(){
+  connection.query("SELECT roles.id,role_title,department_name FROM roles RIGHT JOIN departments ON roles.department_id = departments.id;",
+  function(err, res) {
+      console.table(res);
+      fireUpEMS();
+  });
+};
+
+  function viewAllRoles() {
+
+    connection.query("SELECT id,role_title,role_salary FROM roles", 
+    function(err, res) {
+        console.table(res);
+        fireUpEMS();
+    });
+};
+
+function addTeamMemeber() {
+const questionaire = [{
+type: "input",
+name: "FirstName",
+message: "Please Enter the First Name of the New Team Member",
+},
+
+{ type: "input",
+name: "LastName",
+message: "Please Enter the Last Name of the New Team Member",
+},
+
+{type: "input",
+name: "RoleNumber",
+message: "Please enter the role id number, which can be found in the Full List of Roles, or can a new role id can be created later"}
+]
+inquirer.prompt(questionaire).then(data =>
+  connection.query("INSERT INTO employees SET ?",
+  {
+    first_name: data.FirstName,
+    last_name: data.LastName,
+    role_id: data.RoleNumber
+  },
+  function(err, res){
+    console.log ("Team Member added to roster");
+    fireUpEMS();
+  })
+  );
+
+};
+
+function addDepartment(){
+inquirer.prompt({
+type: "input",
+name:"DepartmentName",
+message: "Please enter the name of the department you want to create: ",
+}).then(data=>
+  connection.query("INSERT INTO departments SET ?" ,
+{
+department_name: data.DepartmentName,
+
+},
 function(err, res){
-console.table(res);
+  console.log("New Department Created");
+  fireUpEMS();
+}));
+
+};
+
+function addRole(){
+
+const roleQ =
+
+[{
+type: "input",
+name: "RoleName",
+message: "Please enter the new role you would like to create: ",
+},
+
+{ type: "input",
+name: "RoleSalary",
+message: "Please enter the salary for the new role",
+},
+
+{ type: "input",
+name: "DepartmentID",
+message: "Please Enter the id of department, in which you are adding the role ",
+}]
+inquirer.prompt(roleQ).then(data=>
+  connection.query("INSERT INTO roles SET ?",
+  {
+    role_title: data.RoleName,
+    role_salary: data.RoleSalary,
+    department_id: data.DepartmentID,
+  },
+  function(err, res) {
+console.log("Role Created");
 fireUpEMS();
+  })
+  );
+};
 
-});
+function exitM(){
 
-
+  console.log("Ciao, happy Managing!");
 
 }
