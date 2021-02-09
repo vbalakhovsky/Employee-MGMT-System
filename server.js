@@ -42,6 +42,7 @@ function fireUpEMS(){
 "Add Team Member",
 "Add Department",
 "Add Role",
+"Update the Role of an Existing Team Member",
 "Exit"
   ]}).then(function(answer){
 switch (answer.startSystem){
@@ -111,11 +112,11 @@ break;
 
 function fullProfile(){
 
-  connection.query("SELECT employees.id, first_name, last_name, role_id FROM employees RIGHT JOIN employees ON roles.id = employees.role_id;", 
-function(err, res){
-  console.table(res);
-fireUpEMS();
-});
+connection.query("SELECT * FROM employees INNER JOIN roles ON roles.id = employees.role_id", 
+  function(err, res) {
+      console.table(res);
+      fireUpEMS();
+  });
 
 };
 
@@ -260,8 +261,69 @@ fireUpEMS();
   );
 };
 
-function exitM(){
+         function exitM(){
 
-  console.log("Ciao, happy Managing!");
+            console.log("Ciao, happy Managing!");
+          
+          }
 
-}
+
+
+
+          // function  updateEmployeeRole() {
+          //   // query the database for all items being auctioned
+          //   connection.query("SELECT * FROM employees INNER JOIN roles ON roles.id = employees.role_id ", 
+          //   function(err, results) {
+          //     if (err) throw err;
+             
+          //     inquirer
+          //       .prompt([
+          //         {
+          //           name: "choice",
+          //           type: "rawlist",
+          //           choices: function() {
+          //             var choiceArray = [];
+          //             for (var i = 0; i < results.length; i++) {
+          //               choiceArray.push(results[i].last_name);
+          //             }
+          //             return choiceArray;
+          //           },
+          //           message: "Which employee you would like to update"
+          //         },
+          //         {
+          //           name: "newRole",
+          //           type: "input",
+          //           message: "What is the new role"
+          //         }
+          //       ])
+          //       .then(function(answer) {
+          //         // get the information of the chosen item
+          //         var chosenItem;
+          //         for (var i = 0; i < results.length; i++) {
+          //           if (results[i].last_name === answer.choice) {
+          //             chosenItem = results[i];
+          //           }
+          //         }
+          
+          //           connection.query(
+          //             "UPDATE roles SET ? WHERE ?",
+          //             [
+          //               {
+          //                 role_title: answer.newRole
+          //               },
+          //               {
+          //                 id: chosenItem.id
+          //               }
+          //             ],
+          //             function(error) {
+          //               if (error) throw err;
+          //               console.log("Role updated");
+          //               fireUpEMS();
+          //             }
+          //           );
+          //         }
+                  
+
+          
+
+                
