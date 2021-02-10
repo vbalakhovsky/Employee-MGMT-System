@@ -43,6 +43,7 @@ function fireUpEMS() {
       "Add Department",
       "Add Role",
       "Update the Role of an Existing Team Member",
+      "Delete an employee",
       "Exit"
     ]
   }).then(function (answer) {
@@ -98,8 +99,8 @@ function fireUpEMS() {
         break;
 
 
-      case "Change Employee's Manager":
-        changeMgr();
+      case "Delete an employee":
+        deleteE();
 
         break;
 
@@ -287,7 +288,7 @@ function updateEmployeeRole() {
             var choiceArray = [];
             for (var i = 0; i < res.length; i++) {
               choiceArray.push(res[i].last_name);
-              console.log(choiceArray);
+             
             }
             return choiceArray;
 
@@ -333,5 +334,59 @@ function updateEmployeeRole() {
         })
       }
   )}
+
+  function deleteE() {
+    connection.query("SELECT * FROM employees",
+      function (err, res) {
+        if (err) throw err;
+        inquirer
+          .prompt([{
+  
+            name: "choice",
+            type: "rawlist",
+            choices: function () {
+              var choiceArray = [];
+              for (var i = 0; i < res.length; i++) {
+                choiceArray.push(res[i].last_name);
+              
+              }
+              return choiceArray;
+  
+  
+            },
+  
+            message: "Which employee you would like to delete?"
+  
+          }
+  
+         
+          ])
+          .then(function (answer) {
+  
+            var chosenItem;
+            for (var i = 0; i < res.length; i++) {
+              if (res[i].last_name === answer.choice) {
+  
+                chosenItem = res[i];
+              }
+            }
+            connection.query(
+              "DELETE FROM employees WHERE id = ?",
+             
+              [
+                
+                { id: chosenItem.id }
+  
+              ],
+  
+              function (error) {
+                if (error) throw err;
+                console.log("Fired!");
+                fireUpEMS();
+              }
+            );
+          })
+        }
+    )}
 
 
